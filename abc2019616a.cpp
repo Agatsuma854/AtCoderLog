@@ -1,8 +1,10 @@
 #include<cstdio>
+#include <algorithm>
 #include <iostream>
+#include <vector>
 
 using namespace std;
-typedef long long ll;
+using ll = long long;
 
 ll gcd(ll x, ll y) {
     if (y == 0) {
@@ -12,33 +14,30 @@ ll gcd(ll x, ll y) {
 }
 
 int main() {
-    /*
-     * a と b がありました.
-     * その時の...
-     * g = 最大公約数 <- ユークリッドの互除法で出せる
-     * l = 最小公倍数
-     *
-     * a x b = g x l を変形すればlgを簡単に求められる
-     *
-     */
+    int n;
+    cin >> n;
 
+    vector<pair<int, int>> task(n);
 
-    ll a, b, c, d, ans = 0;
-    cin >> a >> b >> c >> d;
+    for (int i = 0; i < n; ++i) {
+        cin >> task.at(i).second >> task.at(i).first; // 締め切り/所要時間
+    }
 
-    // これa-1以下の公約数も足しちゃってるから引かないとだめだよね
-    ans += b; // 範囲から割り切れるやつを引く
-    ans -= b / c;
-    ans -= b / d;
-    ans += b / (c * d / gcd(c, d)); // c*d / g = l で最小公倍数が求められる
-    // bをcとdの最小公倍数で割ると２つかぶりを潰せる
+    sort(task.begin(), task.end()); // pairだとfirst要素にソートがかかる
 
-    // a-1より下の領域を引いて, bの約数はa以下も引いてしまっているので足して戻す
-    --a;
-    ans -= a;
-    ans += a / c;
-    ans += a / d;
-    ans -= a / (c * d / gcd(c, d));
+    int sum = 0;
+    bool isYes = true;
+    for (auto v : task) {
+        // 所要時間が締め切り時間をオーバーしなければよい
+        sum += v.second;
 
-    cout << ans << endl;
+        if (sum > v.first) {
+            isYes = false;
+            break;
+        }
+    }
+
+    cout << (isYes ? "Yes" : "No") << endl;
+
+    return 0;
 }
